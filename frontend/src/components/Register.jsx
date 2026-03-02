@@ -2,13 +2,14 @@ import { useState } from "react";
 import API from "../api";
 
 export default function Register({ onDone, goLogin }) {
-  const [step, setStep]       = useState(1);
-  const [form, setForm]       = useState({ name: "", email: "", password: "", role: "patient" });
-  const [otp, setOtp]         = useState("");
-  const [loading, setLoading] = useState(false);
-  const [msg, setMsg]         = useState("");
-  const [error, setError]     = useState("");
-  const [timer, setTimer]     = useState(0);
+  const [step, setStep]         = useState(1);
+  const [form, setForm]         = useState({ name: "", email: "", password: "", role: "patient" });
+  const [otp, setOtp]           = useState("");
+  const [loading, setLoading]   = useState(false);
+  const [msg, setMsg]           = useState("");
+  const [error, setError]       = useState("");
+  const [timer, setTimer]       = useState(0);
+  const [showPass, setShowPass] = useState(false);
 
   const startTimer = () => {
     setTimer(60);
@@ -53,6 +54,16 @@ export default function Register({ onDone, goLogin }) {
     if (res.ok) { setMsg("New code sent!"); startTimer(); } else setError(data.error);
   };
 
+  const EyeBtn = ({ show, toggle }) => (
+    <button onClick={toggle} style={{
+      position: "absolute", right: "12px", top: "50%",
+      transform: "translateY(-50%)", background: "none",
+      border: "none", cursor: "pointer", fontSize: "18px", color: "#94a3b8"
+    }}>
+      {show ? "🙈" : "👁️"}
+    </button>
+  );
+
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
@@ -74,8 +85,16 @@ export default function Register({ onDone, goLogin }) {
               onChange={e => setForm({ ...form, name: e.target.value })} />
             <input placeholder="Email Address" type="email" value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })} />
-            <input placeholder="Password (min 6 characters)" type="password" value={form.password}
-              onChange={e => setForm({ ...form, password: e.target.value })} />
+            <div style={{ position: "relative", marginBottom: "14px" }}>
+              <input
+                placeholder="Password (min 6 characters)"
+                type={showPass ? "text" : "password"}
+                value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                style={{ marginBottom: "0", paddingRight: "44px" }}
+              />
+              <EyeBtn show={showPass} toggle={() => setShowPass(!showPass)} />
+            </div>
             <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })}>
               <option value="patient">Patient</option>
               <option value="doctor">Doctor</option>

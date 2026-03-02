@@ -2,15 +2,17 @@ import { useState } from "react";
 import API from "../api";
 
 export default function Login({ onLogin, goRegister }) {
-  const [view, setView]       = useState("login");
-  const [form, setForm]       = useState({ email: "", password: "" });
-  const [fpEmail, setFpEmail] = useState("");
-  const [fpCode, setFpCode]   = useState("");
-  const [fpPass, setFpPass]   = useState("");
-  const [error, setError]     = useState("");
-  const [msg, setMsg]         = useState("");
-  const [loading, setLoading] = useState(false);
-  const [timer, setTimer]     = useState(0);
+  const [view, setView]         = useState("login");
+  const [form, setForm]         = useState({ email: "", password: "" });
+  const [fpEmail, setFpEmail]   = useState("");
+  const [fpCode, setFpCode]     = useState("");
+  const [fpPass, setFpPass]     = useState("");
+  const [error, setError]       = useState("");
+  const [msg, setMsg]           = useState("");
+  const [loading, setLoading]   = useState(false);
+  const [timer, setTimer]       = useState(0);
+  const [showPass, setShowPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
 
   const startTimer = () => {
     setTimer(60);
@@ -67,6 +69,16 @@ export default function Login({ onLogin, goRegister }) {
     if (res.ok) { setMsg("New code sent!"); startTimer(); } else setError(data.error);
   };
 
+  const EyeBtn = ({ show, toggle }) => (
+    <button onClick={toggle} style={{
+      position: "absolute", right: "12px", top: "50%",
+      transform: "translateY(-50%)", background: "none",
+      border: "none", cursor: "pointer", fontSize: "18px", color: "#94a3b8"
+    }}>
+      {show ? "🙈" : "👁️"}
+    </button>
+  );
+
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
@@ -80,10 +92,16 @@ export default function Login({ onLogin, goRegister }) {
             {msg   && <div className="success-msg">{msg}</div>}
             <input placeholder="Email" type="email" value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })} />
-            <input placeholder="Password" type="password" value={form.password}
-              onChange={e => setForm({ ...form, password: e.target.value })}
-              onKeyDown={e => e.key === "Enter" && submit()} />
-            <div style={{ textAlign: "right", marginBottom: "14px", marginTop: "-8px" }}>
+            <div style={{ position: "relative", marginBottom: "14px" }}>
+              <input placeholder="Password"
+                type={showPass ? "text" : "password"}
+                value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                onKeyDown={e => e.key === "Enter" && submit()}
+                style={{ marginBottom: "0", paddingRight: "44px" }} />
+              <EyeBtn show={showPass} toggle={() => setShowPass(!showPass)} />
+            </div>
+            <div style={{ textAlign: "right", marginBottom: "14px", marginTop: "-4px" }}>
               <button className="link-btn" onClick={() => { setView("forgot"); setError(""); setMsg(""); }}>
                 Forgot Password?
               </button>
@@ -131,9 +149,15 @@ export default function Login({ onLogin, goRegister }) {
             <input placeholder="Enter 6-digit code" value={fpCode} maxLength={6}
               onChange={e => setFpCode(e.target.value.replace(/\D/g, ""))}
               style={{ fontSize: "22px", letterSpacing: "8px", textAlign: "center" }} />
-            <input placeholder="New Password (min 6 characters)" type="password" value={fpPass}
-              onChange={e => setFpPass(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && resetPassword()} />
+            <div style={{ position: "relative", marginBottom: "14px" }}>
+              <input placeholder="New Password (min 6 characters)"
+                type={showNewPass ? "text" : "password"}
+                value={fpPass}
+                onChange={e => setFpPass(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && resetPassword()}
+                style={{ marginBottom: "0", paddingRight: "44px" }} />
+              <EyeBtn show={showNewPass} toggle={() => setShowNewPass(!showNewPass)} />
+            </div>
             <button className="btn-primary" onClick={resetPassword} disabled={loading}>
               {loading ? "Resetting..." : "✓ Reset Password"}
             </button>
