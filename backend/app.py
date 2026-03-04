@@ -11,19 +11,20 @@ app.secret_key = os.environ.get("SECRET_KEY", "telemedicine_secret_2024")
 CORS(app, supports_credentials=True, origins=["http://localhost:3000", os.environ.get("FRONTEND_URL", "*")])
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
-# ── Email Config ──────────────────────────────────────
+# ── Email Config (Gmail SMTP) ─────────────────────────
 app.config["MAIL_SERVER"]         = "smtp.gmail.com"
 app.config["MAIL_PORT"]           = 587
 app.config["MAIL_USE_TLS"]        = True
-app.config["MAIL_USERNAME"]       = os.environ.get("MAIL_USERNAME", "suryansh.unofficial08@gmail.com")
-app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD", "ttfjngsnnncbjobc")
-app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME", "suryansh.unofficial08@gmail.com")
+app.config["MAIL_USERNAME"]       = "suryansh.unofficial08@gmail.com"
+app.config["MAIL_PASSWORD"]       = "ttfjngsnnncbjobc"
+app.config["MAIL_DEFAULT_SENDER"] = "suryansh.unofficial08@gmail.com"
 mail = Mail(app)
 
 DB = "database/telemedicine.db"
-import os
+
+# ── Auto Initialize Database ──────────────────────────
+os.makedirs("database", exist_ok=True)
 if not os.path.exists(DB):
-    os.makedirs("database", exist_ok=True)
     conn = sqlite3.connect(DB)
     c = conn.cursor()
     c.executescript("""
@@ -56,7 +57,6 @@ if not os.path.exists(DB):
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
-    import hashlib
     doctors = [
         ("Dr. Priya Sharma", "priya@clinic.com",  hashlib.sha256("doctor123".encode()).hexdigest(), "doctor", "General Physician"),
         ("Dr. Arjun Mehta",  "arjun@clinic.com",  hashlib.sha256("doctor123".encode()).hexdigest(), "doctor", "Cardiologist"),
@@ -70,7 +70,6 @@ if not os.path.exists(DB):
     conn.commit()
     conn.close()
     print("✅ Database auto-initialized!")
-os.makedirs("database", exist_ok=True)
 
 otp_store = {}
 
@@ -83,6 +82,7 @@ def get_db():
 def generate_otp():
     return ''.join(random.choices(string.digits, k=6))
 
+# ── Send Email via Gmail SMTP ─────────────────────────
 def send_otp_email(email, otp, name, subject="Email Verification", color="#4f46e5", title="Email Verification", msg_text="complete your registration"):
     try:
         msg = Message(subject=f"TeleMed AI — {subject}", recipients=[email])
