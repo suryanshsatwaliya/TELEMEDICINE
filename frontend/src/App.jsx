@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import Login        from "./components/Login";
-import Register     from "./components/Register";
-import Dashboard    from "./components/Dashboard";
+import Login          from "./components/Login";
+import Register       from "./components/Register";
+import Dashboard      from "./components/Dashboard";
 import SymptomChecker from "./components/SymptomChecker";
-import Appointments from "./components/Appointments";
-import VideoCall    from "./components/VideoCall";
+import Appointments   from "./components/Appointments";
+import VideoCall      from "./components/VideoCall";
 import MedicalRecords from "./components/MedicalRecords";
-import Navbar       from "./components/Navbar";
+import Navbar         from "./components/Navbar";
+import CallHistory    from "./components/CallHistory";
 
 export default function App() {
-  const [page, setPage]       = useState("login");
-  const [user, setUser]       = useState(null);
+  const [page, setPage]         = useState("login");
+  const [user, setUser]         = useState(null);
   const [callRoom, setCallRoom] = useState(null);
 
   useEffect(() => {
@@ -43,12 +44,21 @@ export default function App() {
 
   return (
     <div className="app">
-      <Navbar user={user} page={page} setPage={setPage} onLogout={logout} />
+      <Navbar
+        user={user}
+        page={page}
+        setPage={setPage}
+        activePage={page}
+        setActivePage={setPage}
+        onLogout={logout}
+      />
       <main className="main-content">
         {page === "dashboard"    && <Dashboard user={user} setPage={setPage} />}
         {page === "appointments" && <Appointments user={user} startCall={setCallRoom} />}
         {page === "symptoms"     && <SymptomChecker user={user} />}
         {page === "records"      && <MedicalRecords user={user} />}
+        {page === "video"        && <VideoCall room={`room-${user.id}`} user={user} onLeave={() => setPage("dashboard")} />}
+        {page === "calls"        && <CallHistory user={user} />}
       </main>
     </div>
   );
