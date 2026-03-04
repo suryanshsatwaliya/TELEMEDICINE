@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Settings from "./Settings";
 
-export default function Navbar({ user, onLogout, page, setPage }) {
+export default function Navbar({ user, page, setPage, onLogout }) {
   const [menuOpen, setMenuOpen]         = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const menuRef = useRef(null);
@@ -16,19 +16,19 @@ export default function Navbar({ user, onLogout, page, setPage }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const navItems = user.role === "doctor"
+  const tabs = user.role === "doctor"
     ? [
-        { id: "dashboard",    label: "🏠 Dashboard" },
+        { id: "dashboard",    label: "🏠 Home" },
         { id: "appointments", label: "📅 Appointments" },
-        { id: "records",      label: "📋 Records" },
+        { id: "records",      label: "📋 Medical Records" },
         { id: "video",        label: "📹 Video Call" },
         { id: "calls",        label: "📞 Call History" },
       ]
     : [
-        { id: "dashboard",    label: "🏠 Dashboard" },
+        { id: "dashboard",    label: "🏠 Home" },
         { id: "appointments", label: "📅 Appointments" },
-        { id: "symptoms",     label: "🤒 Symptoms" },
-        { id: "records",      label: "📋 Records" },
+        { id: "symptoms",     label: "🩺 Symptom Checker" },
+        { id: "records",      label: "📋 Medical Records" },
         { id: "video",        label: "📹 Video Call" },
         { id: "calls",        label: "📞 Call History" },
       ];
@@ -36,34 +36,24 @@ export default function Navbar({ user, onLogout, page, setPage }) {
   return (
     <>
       <nav className="navbar">
+        <div className="nav-brand">💊 TeleMed AI</div>
 
-        {/* Brand */}
-        <div className="nav-brand" onClick={() => setPage("dashboard")} style={{ cursor: "pointer" }}>
-          💊 TeleMed AI
-        </div>
-
-        {/* Nav Links — same as before */}
-        <div className="nav-links">
-          {navItems.map(item => (
-            <button
-              key={item.id}
-              className={`nav-link ${page === item.id ? "active" : ""}`}
-              onClick={() => setPage(item.id)}
-            >
-              {item.label}
-            </button>
+        <div className="nav-tabs">
+          {tabs.map(t => (
+            <button key={t.id} className={`nav-btn ${page === t.id ? "active" : ""}`}
+              onClick={() => setPage(t.id)}>{t.label}</button>
           ))}
         </div>
 
-        {/* Right side — user name + 3 dot menu */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
-          <span className="nav-user">👤 {user.name}</span>
+        <div className="nav-user">
+          <span>👤 {user.name}</span>
 
+          {/* 3 Dot Menu */}
           <div style={{ position: "relative" }} ref={menuRef}>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="nav-link"
-              style={{ fontSize: "20px", padding: "4px 10px", fontWeight: "700" }}
+              className="logout-btn"
+              style={{ fontSize: "18px", fontWeight: "700", padding: "6px 12px" }}
               title="Menu"
             >
               ⋮
@@ -100,7 +90,6 @@ export default function Navbar({ user, onLogout, page, setPage }) {
             )}
           </div>
         </div>
-
       </nav>
 
       {showSettings && (
