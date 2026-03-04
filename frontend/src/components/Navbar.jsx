@@ -21,7 +21,6 @@ export default function Navbar({ user, page, setPage, onLogout }) {
         { id: "dashboard",    label: "🏠 Home" },
         { id: "appointments", label: "📅 Appointments" },
         { id: "records",      label: "📋 Medical Records" },
-        { id: "video",        label: "📹 Video Call" },
         { id: "calls",        label: "📞 Call History" },
       ]
     : [
@@ -29,7 +28,6 @@ export default function Navbar({ user, page, setPage, onLogout }) {
         { id: "appointments", label: "📅 Appointments" },
         { id: "symptoms",     label: "🩺 Symptom Checker" },
         { id: "records",      label: "📋 Medical Records" },
-        { id: "video",        label: "📹 Video Call" },
         { id: "calls",        label: "📞 Call History" },
       ];
 
