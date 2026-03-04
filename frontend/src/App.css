@@ -36,7 +36,9 @@ textarea { min-height: 80px; resize: vertical; }
 .auth-card h2 {
   font-size: 28px; margin-bottom: 4px;
   background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .auth-card h3 { margin: 16px 0 22px; font-size: 22px; color: #1e293b; }
 .auth-card .subtitle { color: #94a3b8; font-size: 13px; margin-bottom: 8px; }
