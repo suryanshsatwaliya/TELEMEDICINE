@@ -98,7 +98,9 @@ export default function Login({ onLogin, goRegister }) {
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
                 onKeyDown={e => e.key === "Enter" && submit()}
-                style={{ marginBottom: "0", paddingRight: "44px" }} />
+                style={{ marginBottom: "0", paddingRight: "44px" }} 
+                autoComplete="current-password"
+                />
               <EyeBtn show={showPass} toggle={() => setShowPass(!showPass)} />
             </div>
             <div style={{ textAlign: "right", marginBottom: "14px", marginTop: "-4px" }}>

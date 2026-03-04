@@ -92,6 +92,7 @@ export default function Register({ onDone, goLogin }) {
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
                 style={{ marginBottom: "0", paddingRight: "44px" }}
+                autoComplete="new-password"
               />
               <EyeBtn show={showPass} toggle={() => setShowPass(!showPass)} />
             </div>
