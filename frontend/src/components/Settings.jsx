@@ -119,7 +119,7 @@ export default function Settings({ user, onLogout, onClose }) {
           <label style={labelStyle}>Age</label>
           <input style={inputStyle} value={profile.age || ""}
             onChange={e => setProfile({ ...profile, age: e.target.value })}
-            placeholder="e.g. 25" type="number" />
+            placeholder="e.g. 25" type="number" min="0" />
         </div>
 
         {/* Medical Info */}
@@ -131,13 +131,13 @@ export default function Settings({ user, onLogout, onClose }) {
               <label style={labelStyle}>Weight (kg)</label>
               <input style={inputStyle} value={profile.weight || ""}
                 onChange={e => setProfile({ ...profile, weight: e.target.value })}
-                placeholder="e.g. 70" type="number" />
+                placeholder="e.g. 70" type="number" min="0" />
             </div>
             <div>
               <label style={labelStyle}>Height (cm)</label>
               <input style={inputStyle} value={profile.height || ""}
                 onChange={e => setProfile({ ...profile, height: e.target.value })}
-                placeholder="e.g. 175" type="number" />
+                placeholder="e.g. 175" type="number" min="0" />
             </div>
           </div>
 
