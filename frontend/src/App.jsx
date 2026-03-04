@@ -44,14 +44,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <Navbar
-        user={user}
-        page={page}
-        setPage={setPage}
-        activePage={page}
-        setActivePage={setPage}
-        onLogout={logout}
-      />
+      <Navbar user={user} page={page} setPage={setPage} onLogout={logout} />
       <main className="main-content">
         {page === "dashboard"    && <Dashboard user={user} setPage={setPage} />}
         {page === "appointments" && <Appointments user={user} startCall={setCallRoom} />}
