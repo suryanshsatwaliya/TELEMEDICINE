@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import Login          from "./components/Login";
-import Register       from "./components/Register";
-import Dashboard      from "./components/Dashboard";
-import SymptomChecker from "./components/SymptomChecker";
-import Appointments   from "./components/Appointments";
-import VideoCall      from "./components/VideoCall";
-import MedicalRecords from "./components/MedicalRecords";
-import Navbar         from "./components/Navbar";
-import CallHistory    from "./components/CallHistory";
+import LoginSelector    from "./components/LoginSelector";
+import Register         from "./components/Register";
+import PatientDashboard from "./components/PatientDashboard";
+import DoctorDashboard  from "./components/DoctorDashboard";
+import SymptomChecker   from "./components/SymptomChecker";
+import Appointments     from "./components/Appointments";
+import VideoCall        from "./components/VideoCall";
+import MedicalRecords   from "./components/MedicalRecords";
+import Navbar           from "./components/Navbar";
+import CallHistory      from "./components/CallHistory";
 
 export default function App() {
   const [page, setPage]         = useState("login");
@@ -34,7 +35,7 @@ export default function App() {
 
   if (!user) return (
     page === "login"
-      ? <Login onLogin={login} goRegister={() => setPage("register")} />
+      ? <LoginSelector onLogin={login} goRegister={() => setPage("register")} />
       : <Register onDone={() => setPage("login")} goLogin={() => setPage("login")} />
   );
 
@@ -46,8 +47,9 @@ export default function App() {
     <div className="app">
       <Navbar user={user} page={page} setPage={setPage} onLogout={logout} />
       <main className="main-content">
-        {page === "dashboard"    && <Dashboard user={user} setPage={setPage} />}
-        {page === "appointments" && <Appointments user={user} startCall={setCallRoom} />}
+        {page === "dashboard" && user.role === "doctor"  && <DoctorDashboard  user={user} setPage={setPage} />}
+        {page === "dashboard" && user.role === "patient" && <PatientDashboard user={user} setPage={setPage} />}
+        {page === "appointments" && <Appointments   user={user} startCall={setCallRoom} />}
         {page === "symptoms"     && <SymptomChecker user={user} />}
         {page === "records"      && <MedicalRecords user={user} />}
         {page === "video"        && <VideoCall room={`room-${user.id}`} user={user} onLeave={() => setPage("dashboard")} />}

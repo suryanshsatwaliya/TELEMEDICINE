@@ -328,7 +328,7 @@ def delete_appointment(apt_id):
 @app.route("/api/doctors", methods=["GET"])
 def get_doctors():
     db   = get_db()
-    rows = db.execute("SELECT id,name,specialization FROM users WHERE role='doctor'").fetchall()
+    rows = db.execute("SELECT id,name,specialization,qualification,experience,timeslots FROM users WHERE role='doctor'").fetchall()
     return jsonify([dict(r) for r in rows])
 
 @app.route("/api/predict", methods=["POST"])
