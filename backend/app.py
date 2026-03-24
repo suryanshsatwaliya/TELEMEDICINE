@@ -376,6 +376,24 @@ def end_call():
     db.commit()
     return jsonify({"message":"Call ended"})
 
+@app.route("/api/calls/<int:call_id>", methods=["DELETE"])
+def delete_call(call_id):
+    db = get_db()
+    db.execute("DELETE FROM video_calls WHERE id=?", (call_id,))
+    db.commit()
+    return jsonify({"message": "Call deleted"})
+
+@app.route("/api/calls/clear/<int:user_id>", methods=["DELETE"])
+def clear_calls(user_id):
+    role = request.args.get("role", "patient")
+    db   = get_db()
+    if role == "doctor":
+        db.execute("DELETE FROM video_calls WHERE doctor_id=?",  (user_id,))
+    else:
+        db.execute("DELETE FROM video_calls WHERE patient_id=?", (user_id,))
+    db.commit()
+    return jsonify({"message": "Call history cleared"})
+
 @app.route("/api/calls/<int:user_id>", methods=["GET"])
 def get_call_history(user_id):
     role = request.args.get("role")

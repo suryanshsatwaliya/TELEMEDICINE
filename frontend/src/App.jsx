@@ -12,9 +12,10 @@ import Navbar           from "./components/Navbar";
 import CallHistory      from "./components/CallHistory";
 
 export default function App() {
-  const [page, setPage]         = useState("login");
-  const [user, setUser]         = useState(null);
-  const [callRoom, setCallRoom] = useState(null);
+  const [page,        setPage]        = useState("login");
+  const [user,        setUser]        = useState(null);
+  const [callRoom,    setCallRoom]    = useState(null);
+  const [callAptData, setCallAptData] = useState(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("tm_user");
@@ -33,27 +34,46 @@ export default function App() {
     setPage("login");
   };
 
+  // Called from Appointments — passes room string + appointment row
+  const startCall = (room, aptData = null) => {
+    setCallRoom(room);
+    setCallAptData(aptData);
+  };
+
+  // Full-screen VideoCall (no navbar)
+  if (user && callRoom) return (
+    <VideoCall
+      room={callRoom}
+      user={user}
+      appointmentData={callAptData}
+      onLeave={() => { setCallRoom(null); setCallAptData(null); }}
+    />
+  );
+
   if (!user) return (
     page === "login"
       ? <LoginSelector onLogin={login} goRegister={() => setPage("register")} />
       : <Register onDone={() => setPage("login")} goLogin={() => setPage("login")} />
   );
 
-  if (callRoom) return (
-    <VideoCall room={callRoom} user={user} onLeave={() => setCallRoom(null)} />
-  );
-
   return (
     <div className="app">
       <Navbar user={user} page={page} setPage={setPage} onLogout={logout} />
       <main className="main-content">
-        {page === "dashboard" && user.role === "doctor"  && <DoctorDashboard  user={user} setPage={setPage} />}
-        {page === "dashboard" && user.role === "patient" && <PatientDashboard user={user} setPage={setPage} />}
-        {page === "appointments" && <Appointments   user={user} startCall={setCallRoom} />}
+        {page === "dashboard"    && user.role === "doctor"  && <DoctorDashboard  user={user} setPage={setPage} />}
+        {page === "dashboard"    && user.role === "patient" && <PatientDashboard user={user} setPage={setPage} />}
+        {page === "appointments" && <Appointments   user={user} startCall={startCall} />}
         {page === "symptoms"     && <SymptomChecker user={user} />}
         {page === "records"      && <MedicalRecords user={user} />}
-        {page === "video"        && <VideoCall room={`room-${user.id}`} user={user} onLeave={() => setPage("dashboard")} />}
-        {page === "calls"        && <CallHistory user={user} />}
+        {page === "calls"        && <CallHistory    user={user} />}
+        {page === "video"        && (
+          <VideoCall
+            room={`room-${user.id}`}
+            user={user}
+            appointmentData={null}
+            onLeave={() => setPage("dashboard")}
+          />
+        )}
       </main>
     </div>
   );
